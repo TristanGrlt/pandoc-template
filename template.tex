@@ -1,0 +1,452 @@
+$passoptions.latex()$
+\documentclass[
+$if(fontsize)$
+  $fontsize$,
+$endif$
+$if(papersize)$
+  $papersize$paper,
+$endif$
+$for(classoption)$
+  $classoption$$sep$,
+$endfor$
+]{$documentclass$}
+% Detect engine (pdfTeX, XeTeX, LuaTeX)
+\usepackage{iftex}
+\usepackage{xcolor}
+\usepackage{ifthen}
+
+% Theme configuration - dark or light
+$if(theme)$
+\ifthenelse{\equal{$theme$}{light}}{%
+  % Light theme colors
+  \pagecolor[HTML]{ffffff}
+  \color[HTML]{4c4f69}
+  \definecolor{textcolor}{HTML}{4c4f69}
+  \definecolor{codebgcolor}{HTML}{eff1f5}
+}{%
+  % Dark theme colors (default)
+  \pagecolor[HTML]{171d20}
+  \color{white}
+  \definecolor{textcolor}{HTML}{ffffff}
+  \definecolor{codebgcolor}{HTML}{1e2529}
+}
+$else$
+% Dark theme colors (default)
+\pagecolor[HTML]{171d20}
+\color{white}
+\definecolor{textcolor}{HTML}{ffffff}
+\definecolor{codebgcolor}{HTML}{1e2529}
+$endif$
+
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+\usepackage{amsmath,amssymb}
+$if(cancel)$
+\usepackage{cancel}
+$endif$
+$--
+$-- section numbering
+$--
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+$endif$
+$fonts.latex()$
+$font-settings.latex()$
+\usepackage{fontspec}
+% Improve typography and ensure missing glyphs (e.g., U+2011) are covered via fallback
+\defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
+\setmainfont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
+\setsansfont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
+\setmonofont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
+
+% Fallback mapping for missing Unicode characters (e.g., non-breaking hyphen U+2011)
+% Map U+2011 (non-breaking hyphen) to regular hyphen even if newunicodechar is unavailable
+\begingroup\lccode`\~="2011 \lowercase{\endgroup\def~}{-}
+
+% Hint babel about the main document language; Pandoc will load babel later with bidi options
+\PassOptionsToPackage{provide=*,main=$babel-lang$}{babel}
+
+% Language and localization (French rules, date, hyphenation)
+% Ensure babel uses robust options when it gets loaded later by Pandoc/common blocks
+% (avoid option clashes and enable fallback with provide=*)
+% (language options now handled explicitly below with polyglossia/babel)
+% Language-aware quotation marks and French typography helpers (load if available)
+\usepackage[autostyle=true]{csquotes}
+
+% List styling: dashes for itemize, consistent left margins
+\IfFileExists{enumitem.sty}{%
+  \usepackage{enumitem}
+  \setlist[itemize]{label=\textcolor{h5color}{\textendash}, labelsep=0.6em, leftmargin=2em}
+  \setlist[enumerate]{labelsep=0.6em, leftmargin=2em}
+}{%
+  \renewcommand\labelitemi{\textcolor{h5color}{\textendash}}
+}
+% Micro-typography enhancements
+\usepackage{microtype}
+
+% Packages for code highlighting and Shaded environment
+\usepackage{fancyvrb}
+\usepackage{framed}
+
+% Définir une police de fallback pour les symboles
+\newfontfamily{\symbolsfont}{DejaVu Sans}
+
+% Définir les couleurs pour les titres
+\definecolor{titlecolor}{HTML}{dbbf8b}
+\definecolor{h1color}{HTML}{81c8be}
+\definecolor{h2color}{HTML}{8aa8ec}
+\definecolor{h3color}{HTML}{ca9ee6}
+\definecolor{h4color}{HTML}{e78284}
+\definecolor{h5color}{HTML}{a6d189}
+\definecolor{h6color}{HTML}{ef9f76}
+
+% Définir les couleurs pour le code et la coloration syntaxique
+% codebgcolor est défini dynamiquement selon le thème
+\definecolor{keywordcolor}{HTML}{ca9ee6}     % violet comme h3
+\definecolor{stringcolor}{HTML}{a6d189}      % vert comme h5
+\definecolor{commentcolor}{HTML}{737994}     % gris atténué
+\definecolor{functioncolor}{HTML}{8aa8ec}    % bleu comme h2
+\definecolor{numbercolor}{HTML}{ef9f76}      % orange comme h6
+\definecolor{operatorcolor}{HTML}{81c8be}    % cyan comme h1
+\definecolor{variablecolor}{HTML}{e78284}    % rouge comme h4
+\definecolor{builtincolor}{HTML}{81c8be}     % cyan comme h1
+
+% Définir les préfixes avec symboles
+\newcommand{\prefixone}{{\symbolsfont██}\hspace{0.5em}}
+\newcommand{\prefixtwo}{{\symbolsfont████}\hspace{0.5em}}
+\newcommand{\prefixthree}{{\symbolsfont██████}\hspace{0.5em}}
+\newcommand{\prefixfour}{{\symbolsfont████████}\hspace{0.5em}}
+\newcommand{\prefixfive}{{\symbolsfont██████████}\hspace{0.5em}}
+
+% Activer la numérotation jusqu'au niveau 5
+\setcounter{secnumdepth}{5}
+
+% Redéfinir le format des numéros de sections
+\makeatletter
+\renewcommand\thesection{\@arabic\c@section}
+\renewcommand\thesubsection{\thesection.\@arabic\c@subsection}
+\renewcommand\thesubsubsection{\thesubsection.\@arabic\c@subsubsection}
+\renewcommand\theparagraph{\thesubsubsection.\@arabic\c@paragraph}
+\renewcommand\thesubparagraph{\theparagraph.\@arabic\c@subparagraph}
+
+% Redéfinir les commandes de titre avec préfixes et couleurs
+% Le truc : mettre les numéros dans le format, puis supprimer l'affichage automatique
+\def\@seccntformat#1{\csname prefix#1\endcsname\csname the#1\endcsname\quad}
+
+\newcommand{\prefixsection}{\color{h1color}\prefixone}
+\newcommand{\prefixsubsection}{\color{h2color}\prefixtwo}
+\newcommand{\prefixsubsubsection}{\color{h3color}\prefixthree}
+\newcommand{\prefixparagraph}{\color{h4color}\prefixfour}
+\newcommand{\prefixsubparagraph}{\color{h5color}\prefixfive}
+
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus.2ex}%
+  {\normalfont\Large\bfseries\color{h1color}}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\large\bfseries\color{h2color}}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\color{h3color}}}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {1em}%
+  {\normalfont\normalsize\bfseries\color{h4color}}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {1em}%
+  {\normalfont\normalsize\bfseries\color{h5color}}}
+\makeatother
+
+$common.latex()$
+
+% French-style paragraph indentation (only for French language) - AFTER common.latex() to override parskip
+\usepackage{ifthen}
+$if(babel-lang)$
+\ifthenelse{\equal{$babel-lang$}{french}}{%
+  \IfFileExists{indentfirst.sty}{\usepackage{indentfirst}}{}
+  \setlength{\parindent}{1.5em}
+  \setlength{\parskip}{0.5ex plus 0.2ex minus 0.1ex}
+}{%
+  % Keep default parskip behavior for non-French languages
+}
+$endif$
+
+% Configuration du code inline et des blocs de code
+% Code inline avec fond coloré et bords arrondis (utilise tikz pour les bords arrondis)
+% Les styles sont définis après \usepackage{tikz}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{%
+  \tikz[baseline=(text.base)]{\node[inlinecodestyle] (text) {\oldtexttt{#1}};}%
+}
+
+% Redéfinir l'environnement Shaded pour les blocs de code avec fond coloré et bords arrondis
+% Utilise tikz pour créer une boîte avec bords arrondis
+% Les styles sont définis après \usepackage{tikz}
+% Save old Shaded environment if it exists, otherwise create a dummy one
+\providecommand{\Shaded}{}
+\let\oldShaded\Shaded
+\let\oldendShaded\endShaded
+\renewenvironment{Shaded}{%
+  \vskip 10pt
+  \noindent
+  \begin{tikzpicture}
+    \node[codeblocstyle] \bgroup
+    \begin{minipage}{\dimexpr\linewidth-16pt\relax}
+}{%
+    \end{minipage}
+    \egroup;
+  \end{tikzpicture}
+  \vskip 10pt
+}
+
+% Define highlighting commands if they don't exist (Pandoc will override if highlighting is enabled)
+\providecommand{\KeywordTok}[1]{#1}
+\providecommand{\DataTypeTok}[1]{#1}
+\providecommand{\DecValTok}[1]{#1}
+\providecommand{\BaseNTok}[1]{#1}
+\providecommand{\FloatTok}[1]{#1}
+\providecommand{\ConstantTok}[1]{#1}
+\providecommand{\CharTok}[1]{#1}
+\providecommand{\StringTok}[1]{#1}
+\providecommand{\CommentTok}[1]{#1}
+\providecommand{\OtherTok}[1]{#1}
+\providecommand{\AlertTok}[1]{#1}
+\providecommand{\FunctionTok}[1]{#1}
+\providecommand{\RegionMarkerTok}[1]{#1}
+\providecommand{\ErrorTok}[1]{#1}
+\providecommand{\NormalTok}[1]{#1}
+\providecommand{\OperatorTok}[1]{#1}
+\providecommand{\BuiltInTok}[1]{#1}
+\providecommand{\ControlFlowTok}[1]{#1}
+\providecommand{\VariableTok}[1]{#1}
+\providecommand{\SpecialCharTok}[1]{#1}
+\providecommand{\SpecialStringTok}[1]{#1}
+\providecommand{\ImportTok}[1]{#1}
+\providecommand{\DocumentationTok}[1]{#1}
+\providecommand{\AnnotationTok}[1]{#1}
+\providecommand{\CommentVarTok}[1]{#1}
+\providecommand{\AttributeTok}[1]{#1}
+\providecommand{\InformationTok}[1]{#1}
+\providecommand{\WarningTok}[1]{#1}
+\providecommand{\ExtensionTok}[1]{#1}
+\providecommand{\PreprocessorTok}[1]{#1}
+\providecommand{\VerbatimStringTok}[1]{#1}
+
+% Ajuster les couleurs de coloration syntaxique
+\renewcommand{\KeywordTok}[1]{\textcolor{keywordcolor}{\textbf{#1}}}
+\renewcommand{\DataTypeTok}[1]{\textcolor{functioncolor}{#1}}
+\renewcommand{\DecValTok}[1]{\textcolor{numbercolor}{#1}}
+\renewcommand{\BaseNTok}[1]{\textcolor{numbercolor}{#1}}
+\renewcommand{\FloatTok}[1]{\textcolor{numbercolor}{#1}}
+\renewcommand{\ConstantTok}[1]{\textcolor{numbercolor}{#1}}
+\renewcommand{\CharTok}[1]{\textcolor{stringcolor}{#1}}
+\renewcommand{\StringTok}[1]{\textcolor{stringcolor}{#1}}
+\renewcommand{\CommentTok}[1]{\textcolor{commentcolor}{\textit{#1}}}
+\renewcommand{\OtherTok}[1]{\textcolor{functioncolor}{#1}}
+\renewcommand{\AlertTok}[1]{\textcolor{variablecolor}{\textbf{#1}}}
+\renewcommand{\FunctionTok}[1]{\textcolor{functioncolor}{#1}}
+\renewcommand{\RegionMarkerTok}[1]{\textcolor{commentcolor}{#1}}
+\renewcommand{\ErrorTok}[1]{\textcolor{variablecolor}{\textbf{#1}}}
+\renewcommand{\NormalTok}[1]{\textcolor{textcolor}{#1}}
+\renewcommand{\OperatorTok}[1]{\textcolor{operatorcolor}{#1}}
+\renewcommand{\BuiltInTok}[1]{\textcolor{builtincolor}{#1}}
+\renewcommand{\ControlFlowTok}[1]{\textcolor{keywordcolor}{\textbf{#1}}}
+\renewcommand{\VariableTok}[1]{\textcolor{variablecolor}{#1}}
+\renewcommand{\SpecialCharTok}[1]{\textcolor{numbercolor}{#1}}
+\renewcommand{\SpecialStringTok}[1]{\textcolor{stringcolor}{#1}}
+\renewcommand{\ImportTok}[1]{\textcolor{keywordcolor}{#1}}
+\renewcommand{\DocumentationTok}[1]{\textcolor{commentcolor}{\textit{#1}}}
+\renewcommand{\AnnotationTok}[1]{\textcolor{commentcolor}{\textit{#1}}}
+\renewcommand{\CommentVarTok}[1]{\textcolor{commentcolor}{\textit{#1}}}
+\renewcommand{\AttributeTok}[1]{\textcolor{functioncolor}{#1}}
+\renewcommand{\InformationTok}[1]{\textcolor{commentcolor}{\textit{#1}}}
+\renewcommand{\WarningTok}[1]{\textcolor{variablecolor}{\textbf{#1}}}
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+$after-header-includes.latex()$
+$hypersetup.latex()$
+$if(pdf-trailer-id)$
+
+\ifXeTeX
+\special{pdf:trailerid [ $pdf-trailer-id$ ]}
+\fi
+\ifPDFTeX
+\pdftrailerid{}
+\pdftrailer{/ID [ $pdf-trailer-id$ ]}
+\fi
+\ifLuaTeX
+\pdfvariable trailerid {[ $pdf-trailer-id$ ]}
+\fi
+$endif$
+
+$if(title)$
+\title{\color{titlecolor}$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+$if(subtitle)$
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large\color{titlecolor} #1 \par}}{}{}
+}
+\makeatother
+\subtitle{$subtitle$}
+$endif$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$if(date)$
+\date{$date$}
+$else$
+\date{\today}
+$endif$
+
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% Définir les styles TikZ pour le code selon le thème
+$if(theme)$
+\ifthenelse{\equal{$theme$}{light}}{%
+  % Light theme - with border
+  \tikzset{inlinecodestyle/.style={rounded corners=3pt,fill=codebgcolor,draw=gray!30,line width=0.5pt,inner xsep=3pt,inner ysep=2pt,text=variablecolor}}
+  \tikzset{codeblocstyle/.style={rectangle,rounded corners=6pt,fill=codebgcolor,draw=gray!30,line width=0.5pt,inner sep=8pt,text width=\dimexpr\linewidth-16pt\relax,align=left}}
+}{%
+  % Dark theme - no border
+  \tikzset{inlinecodestyle/.style={rounded corners=3pt,fill=codebgcolor,inner xsep=3pt,inner ysep=2pt,text=stringcolor}}
+  \tikzset{codeblocstyle/.style={rectangle,rounded corners=6pt,fill=codebgcolor,inner sep=8pt,text width=\dimexpr\linewidth-16pt\relax,align=left}}
+}
+$else$
+% Dark theme - no border (default)
+\tikzset{inlinecodestyle/.style={rounded corners=3pt,fill=codebgcolor,inner xsep=3pt,inner ysep=2pt,text=stringcolor}}
+\tikzset{codeblocstyle/.style={rectangle,rounded corners=6pt,fill=codebgcolor,inner sep=8pt,text width=\dimexpr\linewidth-16pt\relax,align=left}}
+$endif$
+
+\begin{document}
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+
+$-- Regular document title page
+$if(title)$
+$-- Page de garde (seulement si no-cover-page n'est PAS défini)
+$if(no-cover-page)$
+$-- Pas de page de garde
+$else$
+% Page de garde personnalisée
+\begin{titlepage}
+\begin{tikzpicture}[remember picture,overlay]
+% Image en haut en pleine largeur
+\node[anchor=north,inner sep=0pt] at (current page.north) {
+$if(theme)$
+  \ifthenelse{\equal{$theme$}{light}}{%
+    \includegraphics[width=\paperwidth,keepaspectratio]{img/light-background.png}
+  }{%
+    \includegraphics[width=\paperwidth,keepaspectratio]{img/dark-background.png}
+  }
+$else$
+  \includegraphics[width=\paperwidth,keepaspectratio]{img/dark-background.png}
+$endif$
+};
+\end{tikzpicture}
+
+% Contenu en bas à gauche
+\vfill
+\raggedright
+{\Huge\bfseries\color{titlecolor}$title$\par}
+\vspace{0.5cm}
+$if(subtitle)$
+{\large\bfseries\color{titlecolor}$subtitle$\par}
+\vspace{0.3cm}
+$endif$
+{\normalsize\color{textcolor}$for(author)$$author$$sep$, $endfor$\par}
+\vspace{0.2cm}
+$if(date)$
+{\normalsize\color{textcolor}$date$\par}
+$else$
+{\normalsize\color{textcolor}\today\par}
+$endif$
+\vspace{1cm}
+\end{titlepage}
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+\clearpage
+$endif$
+$endif$
+$-- Table des matières (seulement si no-toc n'est PAS défini)
+$if(no-toc)$
+$-- Pas de TOC
+$else$
+\tableofcontents
+\clearpage
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+$if(toc-title)$
+\renewcommand*\contentsname{$toc-title$}
+$endif$
+{
+$if(colorlinks)$
+$if(toccolor)$
+\hypersetup{linkcolor=$toccolor$}
+$endif$
+$endif$
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+$endif$
+$if(lof)$
+\listoffigures
+$endif$
+$if(lot)$
+\listoftables
+$endif$
+$if(linestretch)$
+\setstretch{$linestretch$}
+$endif$
+$if(has-frontmatter)$
+\mainmatter
+$endif$
+$body$
+
+$if(has-frontmatter)$
+\backmatter
+$endif$
+$if(nocite-ids)$
+\nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
+$endif$
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(has-chapters)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}
