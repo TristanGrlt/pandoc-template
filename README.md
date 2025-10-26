@@ -91,11 +91,13 @@ make TOC=false
 
 #### Option Combinations
 
-| `COVER` | `true` \| `false` | `true` | Afficher la page de garde |
-| `TOC` | `true` \| `false` | `true` | Afficher la table des matières |
-| `INPUT` | chemin de fichier | `document.md` | Fichier source Markdown |
-| `OUTPUT_NAME` | nom de fichier | `document` | Nom du fichier de sortie |
-| `BIBLIOGRAPHY` | chemin de fichier | `references.bib` | Fichier de bibliographie |
+| Variable       | Valeurs           | Défaut           | Description                    |
+| -------------- | ----------------- | ---------------- | ------------------------------ |
+| `COVER`        | `true` \| `false` | `true`           | Afficher la page de garde      |
+| `TOC`          | `true` \| `false` | `true`           | Afficher la table des matières |
+| `INPUT`        | chemin de fichier | `document.md`    | Fichier source Markdown        |
+| `OUTPUT_NAME`  | nom de fichier    | `document`       | Nom du fichier de sortie       |
+| `BIBLIOGRAPHY` | chemin de fichier | `references.bib` | Fichier de bibliographie       |
 
 ### Exemples d'utilisation
 
