@@ -23,7 +23,7 @@ This folder contains a LaTeX template for generating professional reports with P
 Make sure you have installed:
 
 - **Pandoc** (version 2.0 or higher)
-- **XeLaTeX** (included in TeX Live or MiKTeX)
+- **LuaLaTeX** (included in TeX Live or MiKTeX)
 - **Make** (usually pre-installed on Linux/macOS)
 
 ### Quick Installation
