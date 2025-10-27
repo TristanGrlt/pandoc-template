@@ -56,14 +56,61 @@ $endif$
 $fonts.latex()$
 $font-settings.latex()$
 \usepackage{fontspec}
-% Improve typography and ensure missing glyphs (e.g., U+2011) are covered via fallback
-\defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
-\setmainfont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
-\setsansfont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
-\setmonofont{Space Grotesk}[FallbackFamilies={DejaVu Sans}]
+
+% Amélioration de la typographie
+\defaultfontfeatures{Scale=MatchLowercase,Ligatures=TeX}
+
+% ============================================================================
+% FALLBACK AUTOMATIQUE POUR TOUS LES CARACTÈRES MANQUANTS
+% ============================================================================
+% LuaLaTeX vérifie automatiquement chaque glyphe et utilise les polices 
+% de fallback si le caractère n'existe pas dans Space Grotesk.
+% Aucun mapping manuel nécessaire !
+
+% Enregistrer les cascades de polices de fallback
+% LuaTeX essaiera chaque police dans l'ordre jusqu'à trouver le glyphe
+\directlua{
+  luaotfload.add_fallback("spacegroteskfallback", {
+    "DejaVuSans:mode=node;",
+  })
+}
+
+\directlua{
+  luaotfload.add_fallback("spacegroteskmonofallback", {
+    "DejaVuSansMono:mode=node;",
+  })
+}
+
+% Configuration des polices avec fallback automatique
+\setmainfont{Space Grotesk}[
+  Scale=1.0,
+  UprightFont={* Regular},
+  BoldFont={* SemiBold},
+  ItalicFont={* Regular},
+  BoldItalicFont={* SemiBold},
+  RawFeature={fallback=spacegroteskfallback}
+]
+
+\setsansfont{Space Grotesk}[
+  Scale=1.0,
+  UprightFont={* Regular},
+  BoldFont={* SemiBold},
+  ItalicFont={* Regular},
+  BoldItalicFont={* SemiBold},
+  RawFeature={fallback=spacegroteskfallback}
+]
+
+\setmonofont{Space Grotesk}[
+  Scale=1.0,
+  UprightFont={* Regular},
+  BoldFont={* SemiBold},
+  ItalicFont={* Regular},
+  BoldItalicFont={* SemiBold},
+  RawFeature={fallback=spacegroteskmonofallback}
+]
 
 % Fallback mapping for missing Unicode characters (e.g., non-breaking hyphen U+2011)
-% Map U+2011 (non-breaking hyphen) to regular hyphen even if newunicodechar is unavailable
+% Map U+2011 (non-breaking hyphen) to regular hyphen
 \begingroup\lccode`\~="2011 \lowercase{\endgroup\def~}{-}
 
 % Hint babel about the main document language; Pandoc will load babel later with bidi options
@@ -91,9 +138,6 @@ $font-settings.latex()$
 \usepackage{fancyvrb}
 \usepackage{framed}
 
-% Définir une police de fallback pour les symboles
-\newfontfamily{\symbolsfont}{DejaVu Sans}
-
 % Définir les couleurs pour les titres
 \definecolor{titlecolor}{HTML}{dbbf8b}
 \definecolor{h1color}{HTML}{81c8be}
@@ -114,12 +158,12 @@ $font-settings.latex()$
 \definecolor{variablecolor}{HTML}{e78284}    % rouge comme h4
 \definecolor{builtincolor}{HTML}{81c8be}     % cyan comme h1
 
-% Définir les préfixes avec symboles
-\newcommand{\prefixone}{{\symbolsfont██}\hspace{0.5em}}
-\newcommand{\prefixtwo}{{\symbolsfont████}\hspace{0.5em}}
-\newcommand{\prefixthree}{{\symbolsfont██████}\hspace{0.5em}}
-\newcommand{\prefixfour}{{\symbolsfont████████}\hspace{0.5em}}
-\newcommand{\prefixfive}{{\symbolsfont██████████}\hspace{0.5em}}
+% Définir les préfixes avec symboles (le fallback automatique gère les █)
+\newcommand{\prefixone}{{██}\hspace{0.5em}}
+\newcommand{\prefixtwo}{{████}\hspace{0.5em}}
+\newcommand{\prefixthree}{{██████}\hspace{0.5em}}
+\newcommand{\prefixfour}{{████████}\hspace{0.5em}}
+\newcommand{\prefixfive}{{██████████}\hspace{0.5em}}
 
 % Activer la numérotation jusqu'au niveau 5
 \setcounter{secnumdepth}{5}

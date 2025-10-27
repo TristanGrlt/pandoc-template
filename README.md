@@ -40,6 +40,17 @@ brew install pandoc
 brew install --cask mactex
 ```
 
+## ✨ Features
+
+### 🌐 Automatic Unicode Fallback
+
+This template includes **automatic fallback** for Unicode characters missing in the Space Grotesk font (mathematical symbols, emojis, special characters, etc.).
+
+- **✅ LuaLaTeX (Recommended)**: Native automatic fallback - works for ALL Unicode characters
+- **⚙️ XeLaTeX**: Manual fallback via generated mappings
+
+---
+
 ## 📝 Usage
 
 ### Basic Usage

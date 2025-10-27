@@ -6,7 +6,7 @@
 INPUT ?= document.md
 OUTPUT_NAME ?= document
 TEMPLATE = template.tex
-PDF_ENGINE = xelatex
+PDF_ENGINE = lualatex
 BIBLIOGRAPHY ?= references.bib
 
 # Compilation options
