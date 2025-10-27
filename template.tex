@@ -223,11 +223,19 @@ $if(babel-lang)$
 $endif$
 
 % Configuration du code inline et des blocs de code
-% Code inline avec fond coloré et bords arrondis (utilise tikz pour les bords arrondis)
-% Les styles sont définis après \usepackage{tikz}
+% Code inline avec fond coloré
+% Permet les retours à la ligne automatiques pour le code long
 \let\oldtexttt\texttt
 \renewcommand{\texttt}[1]{%
-  \tikz[baseline=(text.base)]{\node[inlinecodestyle] (text) {\oldtexttt{#1}};}%
+  \begingroup%
+  \ttfamily\small%
+  \fboxsep=2pt\fboxrule=0pt%
+  \colorbox{codebgcolor}{%
+    \color{stringcolor}%
+    \emergencystretch=1em%
+    \hspace{1pt}#1\hspace{1pt}%
+  }%
+  \endgroup%
 }
 
 % Redéfinir l'environnement Shaded pour les blocs de code avec fond coloré et bords arrondis
