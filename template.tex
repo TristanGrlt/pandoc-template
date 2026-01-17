@@ -41,6 +41,12 @@ $endif$
 $if(geometry)$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
+% Package float pour forcer la position des images
+\usepackage{float}
+% Redéfinir le placement par défaut des figures pour utiliser H (Here, exactement ici)
+\makeatletter
+\def\fps@figure{H}
+\makeatother
 \usepackage{amsmath,amssymb}
 $if(cancel)$
 \usepackage{cancel}
@@ -361,6 +367,20 @@ $endif$
 
 \usepackage{graphicx}
 \usepackage{tikz}
+
+% Configuration du positionnement des images
+% Si fix-images est défini à true, les images restent exactement à leur position
+% Sinon, LaTeX les positionne automatiquement (comportement par défaut)
+$if(fix-images)$
+\makeatletter
+% Redéfinir l'environnement figure pour toujours utiliser [H]
+\renewenvironment{figure}[1][H]{%
+  \@float{figure}[H]%
+}{%
+  \end@float
+}
+\makeatother
+$endif$
 
 % Définir les styles TikZ pour le code selon le thème
 $if(theme)$
