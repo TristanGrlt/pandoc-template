@@ -7,6 +7,7 @@ lang: "fr"
 theme: "light" # <-- thème clair : light | thème sombre : dark
 no-cover-page: false # <-- Activer/désactiver la page de garde
 no-toc: true # <-- Activer/désactiver la table des matières
+fix-images: false # <-- Forcer les images à rester exactement à leur position (true) ou laisser LaTeX les positionner automatiquement (false)
 fontsize: 12pt
 geometry: margin=2.5cm
 bibliography: references.bib
