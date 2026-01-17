@@ -188,6 +188,7 @@ lang: "fr"
 theme: "light" # <-- thème clair : light | thème sombre : dark
 no-cover-page: false # <-- Activer/désactiver la page de garde
 no-toc: true # <-- Activer/désactiver la table des matières
+fix-images: true # <-- Forcer les images à rester exactement à leur position
 fontsize: 12pt
 geometry: margin=2.5cm
 # Optionnel : bibliographie
@@ -198,6 +199,22 @@ bibliography: references.bib
 Your content here
 ```
 
+### Supported metadata - English explanation
+
+- `title` - Document title
+- `author` - Author(s)
+- `date` - Date
+- `lang` - Document language (fr, en, es, etc.)
+- `subtitle` - Subtitle (optional)
+- `theme` - Visual theme: `light` or `dark`
+- `no-cover-page` - Disable cover page (`true` to disable)
+- `no-toc` - Disable table of contents (`true` to disable)
+- `fix-images` - Force images to stay at their exact position (`true` to enable)
+  - **`true`**: Images appear exactly where they are placed in the text (recommended for technical documents)
+  - **`false`** or absent: LaTeX automatically positions images to optimize space
+- `bibliography` - Bibliography file (optional)
+- `abstract` - Document abstract (optional)
+
 ### Supported metadata - Explication en Français
 
 - `title` - Titre du document
@@ -205,6 +222,12 @@ Your content here
 - `date` - Date
 - `lang` - Langue du document (fr, en, es, etc.)
 - `subtitle` - Sous-titre (optionnel)
+- `theme` - Thème visuel : `light` (clair) ou `dark` (sombre)
+- `no-cover-page` - Désactiver la page de garde (`true` pour désactiver)
+- `no-toc` - Désactiver la table des matières (`true` pour désactiver)
+- `fix-images` - Forcer les images à rester à leur position exacte (`true` pour activer)
+  - **`true`** : Les images apparaissent exactement où elles sont placées dans le texte (recommandé pour les documents techniques)
+  - **`false`** ou absent : LaTeX positionne automatiquement les images pour optimiser l'espace
 - `bibliography` - Fichier de bibliographie (optionnel)
 - `abstract` - Résumé du document (optionnel)
 
